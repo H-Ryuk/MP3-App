@@ -16,10 +16,10 @@ public class MP3PlayerWithJavaZoom {
     private int n;
 
 
-    List<String> filesList =
-            List.of("C:\\Users\\ADmiN\\Music\\Quraan\\سورة إبراهيم - عبدالرحمن السديس(MP3_320K).mp3",
-                    "C:\\Users\\ADmiN\\Music\\Quraan\\سورة آل عمران - عبدالرحمن السديس(MP3_320K).mp3",
-                    "C:\\Users\\ADmiN\\Music\\Quraan\\سورة الأحقاف - عبدالرحمن السديس(MP3_320K).mp3",
+    public List<String> filesList =
+            List.of("C:/Users/ADmiN/Music/Quraan/سورة إبراهيم - عبدالرحمن السديس(MP3_320K).mp3",
+                    "C:/Users/ADmiN/Music/Quraan/سورة آل عمران - عبدالرحمن السديس(MP3_320K).mp3",
+                    "C:/Users/ADmiN/Music/Quraan/سورة الأحقاف - عبدالرحمن السديس(MP3_320K).mp3",
                     "C:/Users/ADmiN/Music/Quraan/1سورة الكافرون - عبدالرحمن السديس.mp3");
 
 
@@ -44,7 +44,7 @@ public class MP3PlayerWithJavaZoom {
     // Method to play the MP3 file
     public void play(String play) {
         try {
-            if (isPaused) {
+            if (isPaused && !play.equalsIgnoreCase("next") && !play.equalsIgnoreCase("previous")) {
                 player.resume();
                 isPaused = false;
             } else {
@@ -64,6 +64,22 @@ public class MP3PlayerWithJavaZoom {
             e.printStackTrace();
         }
     }
+
+
+    // Method to play the MP3 file
+    public void playingFromList(String path) {
+        System.out.println("from mp3: " + path);
+        try {
+                player.open(new File(path));
+                player.play();
+                System.out.println("Playing: " + path);
+
+        } catch (BasicPlayerException e) {
+            System.out.println("Error playing the file: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
 
 
     // Method to pause playback
