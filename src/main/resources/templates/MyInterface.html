@@ -24,13 +24,17 @@
     <!-- Featured Section -->
     <section class="featured mb-4 text-center">
         <div class="card">
-            <img src="" class="card-img-top" alt="Featured Playlist Image">
+
+            <div>
+                <h4 th:text="${playingFileName}">hello hello</h4>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Featured Playlist</h5>
-                <a class="btn btn-primary" href="/playFile">Play</a>
+                    <a class="btn btn-primary" href="/playFile">Play</a>
+                    <a class="btn btn-primary" href="/chooseFile">Choose File</a>
             </div>
         </div>
     </section>
+
 
     <!-- Top Songs -->
     <section class="top-songs">

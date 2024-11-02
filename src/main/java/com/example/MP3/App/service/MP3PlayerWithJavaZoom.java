@@ -2,9 +2,11 @@ package com.example.MP3.App.service;
 
 import javazoom.jlgui.basicplayer.BasicPlayer;
 import javazoom.jlgui.basicplayer.BasicPlayerException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -13,20 +15,24 @@ public class MP3PlayerWithJavaZoom {
     private BasicPlayer player;
     private String filePath;
     private boolean isPaused;
-    private int n;
+    private int count;
 
 
-    public List<String> filesList =
-            List.of("C:/Users/ADmiN/Music/Quraan/سورة إبراهيم - عبدالرحمن السديس(MP3_320K).mp3",
-                    "C:/Users/ADmiN/Music/Quraan/سورة آل عمران - عبدالرحمن السديس(MP3_320K).mp3",
-                    "C:/Users/ADmiN/Music/Quraan/سورة الأحقاف - عبدالرحمن السديس(MP3_320K).mp3",
-                    "C:/Users/ADmiN/Music/Quraan/1سورة الكافرون - عبدالرحمن السديس.mp3");
+    @Value("${myFilesPath}")
+    private String myFilesPath;
 
 
+    private List<String> filesList = new ArrayList<>();
 
+    public List<String> getFilesList() {
+        return filesList;
+    }
+
+    public void setFilesList(List<String> filesList) {
+        this.filesList = filesList;
+    }
 
     public MP3PlayerWithJavaZoom() {
-        this.filePath = filesList.getFirst();
         this.player = initBasicPlayer();
         this.isPaused = false;
     }
@@ -42,42 +48,48 @@ public class MP3PlayerWithJavaZoom {
 
 
     // Method to play the MP3 file
-    public void play(String play) {
+    public String play(String play) {
+        String playingFileName = "";
+        
         try {
             if (isPaused && !play.equalsIgnoreCase("next") && !play.equalsIgnoreCase("previous")) {
                 player.resume();
                 isPaused = false;
             } else {
-                if(play != null) player.stop();
+                if (play != null) player.stop();
                 assert play != null;
-                if(play.equalsIgnoreCase("next") && n < filesList.size()) n++;
-                if(play.equalsIgnoreCase("previous") && n > 0 || n == filesList.size()) n--;
+                if (play.equalsIgnoreCase("next") && count < filesList.size()) count++;
+                if (play.equalsIgnoreCase("previous") && count > 0 || count == filesList.size()) count--;
 
 
-                player.open(new File(filesList.get(n)));
+                player.open(new File(filesList.get(count)));
                 player.play();
-                System.out.println("Playing: " + filesList.get(n));
+                playingFileName = filesList.get(count).substring(28);
+                System.out.println("Playing: " + playingFileName);
 
             }
         } catch (BasicPlayerException e) {
             System.out.println("Error playing the file: " + e.getMessage());
             e.printStackTrace();
         }
+        return playingFileName;
     }
 
 
     // Method to play the MP3 file
-    public void playingFromList(String path) {
-        System.out.println("from mp3: " + path);
+    public String playingFromList(String path) {
+        String playingFileName = "";
         try {
-                player.open(new File(path));
-                player.play();
-                System.out.println("Playing: " + path);
+            player.open(new File(path));
+            player.play();
+            playingFileName = path.substring(28);
+            System.out.println("Playing: " + playingFileName);
 
         } catch (BasicPlayerException e) {
             System.out.println("Error playing the file: " + e.getMessage());
             e.printStackTrace();
         }
+        return playingFileName;
     }
 
 
@@ -124,6 +136,22 @@ public class MP3PlayerWithJavaZoom {
             e.printStackTrace();
         }
     }
+
+
+
+    public void settingFiles(){
+        File directory = new File(myFilesPath);
+
+        // List all files with .mp3 extension
+        File[] files = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".mp3"));
+        if (files != null) {
+            for (File file : files) {
+                filesList.add(file.getAbsolutePath());
+            }
+        }
+    }
+
+
 
 
 }

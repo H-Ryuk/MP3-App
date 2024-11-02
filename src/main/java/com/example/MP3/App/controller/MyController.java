@@ -2,19 +2,16 @@ package com.example.MP3.App.controller;
 
 
 import com.example.MP3.App.service.MP3PlayerWithJavaZoom;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class MyController {
 
 
-    private static final Logger log = LoggerFactory.getLogger(MyController.class);
     private final MP3PlayerWithJavaZoom mp3Player;
 
     public MyController(MP3PlayerWithJavaZoom mp3Player) {
@@ -25,14 +22,18 @@ public class MyController {
 
     @GetMapping("/")
     public String call(Model model){
-        model.addAttribute("filesList", mp3Player.filesList);
+        mp3Player.settingFiles();
+        model.addAttribute("filesList", mp3Player.getFilesList());
+        model.addAttribute("playingFileName", model.getAttribute("playingFileName"));
         return "MyInterface";
     }
 
 
+
     @GetMapping("playFile")
-    public String playFile() throws InterruptedException {
-        mp3Player.play("resume");
+    public String playFile(RedirectAttributes redirectAttributes) throws InterruptedException {
+        String playingFileName = mp3Player.play("resume");
+        redirectAttributes.addFlashAttribute("playingFileName", playingFileName);
         return "redirect:/";
     }
 
@@ -47,26 +48,29 @@ public class MyController {
 
 
     @GetMapping("nextFile")
-    public String nextFile(){
-        mp3Player.play("next");
+    public String nextFile(RedirectAttributes redirectAttributes){
+        String playingFileName = mp3Player.play("next");
+        redirectAttributes.addFlashAttribute("playingFileName", playingFileName);
         return "redirect:/";
     }
 
 
 
     @GetMapping("previousFile")
-    public String previousFile(){
-        mp3Player.play("previous");
+    public String previousFile(RedirectAttributes redirectAttributes){
+        String playingFileName = mp3Player.play("previous");
+        redirectAttributes.addFlashAttribute("playingFileName", playingFileName);
         return "redirect:/";
     }
+
 
 
     @GetMapping("/playingFromList")
-    public String playFromList(@RequestParam("filename") String filename){
-        System.out.println(filename);
-        log.info("ddddddddddd : " + filename);
-        mp3Player.playingFromList(filename);
+    public String playFromList(@RequestParam("filename") String filename, RedirectAttributes redirectAttributes){
+        String playingFileName = mp3Player.playingFromList(filename);
+        redirectAttributes.addFlashAttribute("playingFileName", playingFileName);
         return "redirect:/";
     }
+
 
 }
