@@ -82,6 +82,7 @@ public class MP3PlayerWithJavaZoom {
         try {
             player.open(new File(path));
             player.play();
+            isPaused = false;
             playingFileName = path.substring(28);
             System.out.println("Playing: " + playingFileName);
 

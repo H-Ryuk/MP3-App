@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.awt.print.Pageable;
+
 @Controller
 public class MyController {
 
@@ -40,8 +42,9 @@ public class MyController {
 
 
     @GetMapping("pauseFile")
-    public String pauseFile(){
+    public String pauseFile(@RequestParam("playingFile") String playingFile, RedirectAttributes redirectAttributes){
         mp3Player.pause();
+        redirectAttributes.addFlashAttribute("playingFileName", playingFile);
         return "redirect:/";
     }
 
